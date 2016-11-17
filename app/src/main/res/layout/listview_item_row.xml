@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="fill_vertical"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:text="TITLE"
+        android:layout_toStartOf="@+id/imageView" />
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:id="@+id/imageView"
+        android:background="?android:attr/actionModeCopyDrawable"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"/>
+
+    <TextView android:id="@+id/txtArtist"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
+        android:textColor="#000000"
+        android:text="ARTIST"
+        android:layout_toEndOf="@+id/txtPosition"
+        android:layout_below="@+id/txtTitle" />
+
+    <TextView
+        android:text="8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:textSize="15sp"
+        android:id="@+id/txtPosition"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtTitle" />
+
+</RelativeLayout>
