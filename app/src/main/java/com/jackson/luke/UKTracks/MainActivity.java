@@ -5,6 +5,9 @@ import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -29,18 +32,31 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
         //Get UI components
         listView = (ListView) findViewById(R.id.tweetList);
-        Button pull = (Button) findViewById(R.id.pull);
+    }
 
-        pull.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //Check network availability and request data
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.refresh:
                 manager.getInstance(isNetworkAvailable(getApplicationContext()));
-            }});
-
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onReturn(Track[] tracks){
         //Interface method for TrackManager's returned data binding
+        //for (int i = 0; i < tracks.length; i++)
+          //  Log.v(Integer.toString(i), tracks[i].getTitle() + " " + tracks[i].getArtist());
         TrackAdapter adapter2 = new TrackAdapter(this, tracks);
         listView.setAdapter(adapter2);
     }

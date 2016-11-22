@@ -17,10 +17,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BasicImageDownloader {
-
+    //Sourced from https://github.com/vad-zuev/ImageDownloader/blob/master/app/src/main/java/com/so/example/tools/BasicImageDownloader.java
+    
     private OnImageLoaderListener mImageLoaderListener;
     private Set<String> mUrlsInProgress = new HashSet<>();
     private final String TAG = this.getClass().getSimpleName();
+    private int position;
 
     public BasicImageDownloader(@NonNull OnImageLoaderListener listener) {
         this.mImageLoaderListener = listener;
@@ -29,11 +31,12 @@ public class BasicImageDownloader {
     public interface OnImageLoaderListener {
         void onError(ImageError error);
         void onProgressChange(int percent);
-        void onComplete(Bitmap result);
+        void onComplete(Bitmap result, int position);
     }
 
 
-    public void download(@NonNull final String imageUrl, final boolean displayProgress) {
+    public void download(@NonNull final String imageUrl, final boolean displayProgress, int _position) {
+        position = _position;
         if (mUrlsInProgress.contains(imageUrl)) {
             Log.w(TAG, "a download for this url is already running, " +
                     "no further download will be started");
@@ -123,7 +126,7 @@ public class BasicImageDownloader {
                 } else {
                     Log.d(TAG, "download complete, " + result.getByteCount() +
                             " bytes transferred");
-                    mImageLoaderListener.onComplete(result);
+                    mImageLoaderListener.onComplete(result, position);
                 }
                 mUrlsInProgress.remove(imageUrl);
                 System.gc();

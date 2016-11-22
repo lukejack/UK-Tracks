@@ -25,17 +25,8 @@
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="cd6e4eb78483ea2c8e467b5ac5728da3aeb9ffb7">
+        sha1="e6d88d71a2f4b6ca49d086c00bd91a89d5d57989">
         <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_1e808a47eb8e6511660995b08f76731fbe26861e/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="22.0.1"
-        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
-        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-22.2.1_7a07d92c32a7756c918f20f4739d37934fbaafd3/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -52,8 +43,17 @@
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="903d76c67d73625009b5c470b5a5cb7b5acb3d1d">
+        sha1="6e7d87fedd86dcc5abdea0d17e17607345ed0592">
         <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_25f83b40b2a7eea3b21c212f11518beb6633c2bf/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-22.2.1_7a07d92c32a7756c918f20f4739d37934fbaafd3/classes.dex" />
     </item>
 
 </items>

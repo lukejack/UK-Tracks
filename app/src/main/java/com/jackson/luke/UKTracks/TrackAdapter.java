@@ -6,13 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import static com.jackson.luke.UKTracks.R.layout.listview_item_row;
 
 public class TrackAdapter extends ArrayAdapter<Track> {
 
-    private Track data[] = null;
+    private Track data[];
 
     public TrackAdapter(Context _context, Track[] _data){
         super(_context, 0, _data);
@@ -30,8 +31,16 @@ public class TrackAdapter extends ArrayAdapter<Track> {
         TextView txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
         TextView txtArtist = (TextView) convertView.findViewById(R.id.txtArtist);
         TextView txtPosition = (TextView) convertView.findViewById(R.id.txtPosition);
+        ImageView imgArt = (ImageView) convertView.findViewById(R.id.imageView);
 
-        //Assign vlues to elements
+        //Assign values to elements
+        if (data[position] == null) {
+            return convertView;
+        }
+
+        if (data[position].getSmallImg() != null){
+            imgArt.setImageBitmap(data[position].getSmallImg());
+        }
         txtTitle.setText(data[position].getTitle());
         txtArtist.setText(data[position].getArtist());
         txtPosition.setText(data[position].getPosition());

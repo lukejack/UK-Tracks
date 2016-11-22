@@ -1,6 +1,7 @@
 package com.jackson.luke.UKTracks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -34,6 +35,7 @@ public class RestRequest extends AsyncTask<URL, Integer, String> {
             result = streamString(in);
         } catch (Exception e){
             //Return connection failure to the calling activity
+            Log.v("Error message", e.getMessage());
             return "FAIL";
         }
         return result;
