@@ -46,6 +46,7 @@ public class Track {
     public void setSmallImg(Bitmap image){
         smallImg = image;
     }
+    public void setTitle(String _title){title = _title;}
 
 
 

@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         //Interface method for TrackManager's returned data binding
         //for (int i = 0; i < tracks.length; i++)
           //  Log.v(Integer.toString(i), tracks[i].getTitle() + " " + tracks[i].getArtist());
+
         TrackAdapter adapter2 = new TrackAdapter(this, tracks);
         listView.setAdapter(adapter2);
     }
