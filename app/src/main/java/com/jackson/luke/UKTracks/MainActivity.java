@@ -60,6 +60,10 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
         TrackAdapter adapter2 = new TrackAdapter(this, tracks);
         listView.setAdapter(adapter2);
+
+        Database db = new Database(this);
+        long id = db.addTrack(new Track("TITLE1", "ARTIST1", "1", "ASDASD", "ASDASD"));
+
     }
 
     public void postToast(String text){
