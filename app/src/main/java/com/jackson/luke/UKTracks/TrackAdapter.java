@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import static com.jackson.luke.UKTracks.R.layout.listview_item_row;
 
-public class TrackAdapter extends ArrayAdapter<Track> {
+public class TrackAdapter extends ArrayAdapter<ListedTrack> {
 
-    private Track data[];
+    private ListedTrack data[];
 
-    public TrackAdapter(Context _context, Track[] _data){
+    public TrackAdapter(Context _context, ListedTrack[] _data){
         super(_context, 0, _data);
         data = _data;
     }

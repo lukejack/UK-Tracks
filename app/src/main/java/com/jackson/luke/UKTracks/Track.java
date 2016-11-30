@@ -14,17 +14,20 @@ public class Track {
     private String title;
     private String artist;
     private String position;
-    private String smallImgURL;
-    private String largeImgURL;
-    private Bitmap smallImg;
 
-
+    /*
     public Track(String _title, String _artist, String _position, String _smallImgURL, String _largeImgURL){
         title = _title;
         artist = _artist;
         position = _position;
         smallImgURL = _smallImgURL;
         largeImgURL = _largeImgURL;
+    }*/
+
+    public Track(String _title, String _artist, String _position){
+        title = _title;
+        artist = _artist;
+        position = _position;
     }
 
     /* UNFINISHED IMAGE DOWNLOADING
@@ -40,26 +43,14 @@ public class Track {
     public String getTitle(){return title;}
     public String getArtist(){return artist;}
     public String getPosition(){return position;}
+    /*
     public String getSmallImgURL(){return smallImgURL;}
     public String getLargeImgURL(){return largeImgURL;}
     public Bitmap getSmallImg(){return smallImg;}
     public void setSmallImg(Bitmap image){
         smallImg = image;
     }
+    */
     public void setTitle(String _title){title = _title;}
-
-
-
-    public Bitmap StringToBitMap(String encodedString){
-        //Function from http://androidtrainningcenter.blogspot.co.uk/2012/03/how-to-convert-string-to-bitmap-and.html
-        try{
-            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        }catch(Exception e){
-            e.getMessage();
-            return null;
-        }
-    }
 
 }

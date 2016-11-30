@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     private MainActivity activity = this;
 
     //Construct track manager with activity reference for data return
-    private TrackManager manager = new TrackManager(activity);
+    private TrackManager manager = new TrackManager(activity, this);
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -53,17 +53,13 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         }
     }
 
-    public void onReturn(Track[] tracks){
+    public void onReturn(ListedTrack[] items){
         //Interface method for TrackManager's returned data binding
         //for (int i = 0; i < tracks.length; i++)
           //  Log.v(Integer.toString(i), tracks[i].getTitle() + " " + tracks[i].getArtist());
 
-        TrackAdapter adapter2 = new TrackAdapter(this, tracks);
+        TrackAdapter adapter2 = new TrackAdapter(this, items);
         listView.setAdapter(adapter2);
-
-        Database db = new Database(this);
-        long id = db.addTrack(new Track("TITLE1", "ARTIST1", "1", "ASDASD", "ASDASD"));
-
     }
 
     public void postToast(String text){

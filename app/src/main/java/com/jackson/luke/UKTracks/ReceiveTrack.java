@@ -4,6 +4,6 @@ package com.jackson.luke.UKTracks;
 //implements a function to post toast in context
 
 public interface ReceiveTrack {
-    void onReturn(Track[] tracks);
+    void onReturn(ListedTrack[] items);
     void postToast(String text);
 }
