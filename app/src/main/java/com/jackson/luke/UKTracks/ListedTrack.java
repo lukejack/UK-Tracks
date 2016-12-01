@@ -13,10 +13,11 @@ public class ListedTrack {
     private Bitmap image;
 
 
-    public ListedTrack(String _title, String _artist, String _position){
+    public ListedTrack(String _title, String _artist, String _position, Bitmap _image){
         title = _title;
         artist = _artist;
         position = _position;
+        image = _image;
     }
 
     public String getTitle(){return title;}
