@@ -8,7 +8,9 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Track {
+import java.io.Serializable;
+
+public class Track implements Serializable{
 
 
     private String title;

@@ -2,11 +2,13 @@ package com.jackson.luke.UKTracks;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Luke on 29/11/2016.
  */
 
-public class Artist {
+public class Artist implements Serializable{
     private String name;
     private String smallURL;
     private String largeURL;

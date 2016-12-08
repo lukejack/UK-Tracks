@@ -12,12 +12,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="fd4fd070d025a22d760f14e9da9ed1e03b505303">
-        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_1e808a47eb8e6511660995b08f76731fbe26861e/classes.dex" />
+        sha1="4aa9516097ba78affb3acc8ea1c3fe8e1381c60d">
+        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_25f83b40b2a7eea3b21c212f11518beb6633c2bf/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/exploded-aar/com.android.support/design/22.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="1821601ddbec5ff125653097812823388700af74">
+        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-22.2.1_8c5bc54112a279040511acb645c784e34ee94b2b/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -30,30 +39,21 @@
     </item>
     <item
         is-multidex="true"
+        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="e57e31cd2e4c674f43c5d25009f4833d7d1e7936">
+        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_1e808a47eb8e6511660995b08f76731fbe26861e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
         sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
         <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-22.2.1_2de56a9d603a42e64f25c23732116ef00328c5f3/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="22.0.1"
-        sha1="3ff4e8236573e4f5bf03cdac69b79c7e96109851">
-        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_25f83b40b2a7eea3b21c212f11518beb6633c2bf/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/luke/Documents/UK-Tracks/app/build/intermediates/exploded-aar/com.android.support/design/22.2.1/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="22.0.1"
-        sha1="1821601ddbec5ff125653097812823388700af74">
-        <dex dex="/Users/luke/Documents/UK-Tracks/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-22.2.1_8c5bc54112a279040511acb645c784e34ee94b2b/classes.dex" />
     </item>
     <item
         is-multidex="true"

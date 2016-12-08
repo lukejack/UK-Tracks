@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     //Construct track manager with activity reference for data return
     private TrackManager manager = new TrackManager(activity, this);
+    private Artist[] artists;
+    private Track[] tracks;
+
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -40,7 +43,16 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
                 Intent intent = new Intent(activity, DetailActivity.class);
-                //intent.putExtra("data", );
+
+                Track selected = tracks[position];
+                for (Artist a : artists){
+                    if (a.getName().equals(selected.getArtist())){
+                        intent.putExtra("artistName", a.getName());
+                        intent.putExtra("imageURL", a.getLargeURL());
+                        break;
+                    }
+                }
+                intent.putExtra("track", selected);
                 startActivity(intent);
             }
         });
@@ -48,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     public void onReturn(Pair<Track[], Artist[]> data){
         List<ListedTrack> listData = new ArrayList<ListedTrack>();
+        tracks = data.first;
+        artists = data.second;
         for (Track t : data.first){
             for(Artist a : data.second){
                 if (t.getArtist().equals(a.getName())){
