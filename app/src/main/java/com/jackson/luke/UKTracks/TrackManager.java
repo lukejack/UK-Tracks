@@ -133,7 +133,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
 
     public void onImageDownload(Bitmap result, int position){
         artists.get(position).setSmallIMG(result);
-        if (++imageCount == artists.size() - 1){
+        if (++imageCount == artists.size()){
             caller.onReturn(new Pair<>(tracks, artists.toArray(new Artist[artists.size()])));
         }
     }

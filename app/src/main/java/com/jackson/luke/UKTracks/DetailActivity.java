@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DetailActivity extends AppCompatActivity implements BasicImageDownloader.OnImageLoaderListener {
-    private String artistName;
+    private Artist artist;
     private Track track;
 
     @Override
@@ -21,28 +21,18 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        artistName = (String) getIntent().getSerializableExtra("artistName");
+        artist = (Artist) getIntent().getSerializableExtra("artist");
         track = (Track) getIntent().getSerializableExtra("track");
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Number " + track.getPosition());
+
         TextView titleHolder = (TextView) findViewById(R.id.title);
         titleHolder.setText(track.getTitle());
         TextView artistHolder = (TextView) findViewById(R.id.artist);
-        artistHolder.setText(artistName);
+        artistHolder.setText(artist.getName());
 
-        BasicImageDownloader downloader = new BasicImageDownloader(this);
-        String url = (String) getIntent().getSerializableExtra("imageURL");
-        downloader.download(url, false, 0);
+        new BasicImageDownloader(this).download(artist.getLargeURL(), false, 0);
     }
 
     @Override

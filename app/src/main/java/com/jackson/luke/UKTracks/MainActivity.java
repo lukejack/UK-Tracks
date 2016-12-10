@@ -47,19 +47,22 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 Track selected = tracks[position];
                 for (Artist a : artists){
                     if (a.getName().equals(selected.getArtist())){
-                        intent.putExtra("artistName", a.getName());
-                        intent.putExtra("imageURL", a.getLargeURL());
+                        intent.putExtra("artist", a);
                         break;
                     }
                 }
                 intent.putExtra("track", selected);
+
                 startActivity(intent);
             }
         });
+        Database db = new Database(activity);
+        db.addArtist(new Artist("name", "small", "large", "last", "mbid"));
+        Artist test = db.getArtist("name");
     }
 
     public void onReturn(Pair<Track[], Artist[]> data){
-        List<ListedTrack> listData = new ArrayList<ListedTrack>();
+        List<ListedTrack> listData = new ArrayList<>();
         tracks = data.first;
         artists = data.second;
         for (Track t : data.first){

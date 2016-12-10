@@ -9,14 +9,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+import java.awt.font.TextAttribute;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 //Tutorial from http://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
 public class Database extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "ArtistTracks.db";
+    public static final String DATABASE_NAME = "ArtistTracks2.db";
 
     private static final String ARTISTS_TABLE = "artists";
     private static final String TRACKS_TABLE = "tracks";
@@ -27,18 +30,19 @@ public class Database extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ARTISTS =
             "CREATE TABLE " + ARTISTS_TABLE + " (" +
-                    "artist" + " TEXT PRIMARY KEY," +
+                    "name" + " TEXT PRIMARY KEY, " +
                     "largeURL" + TEXT_TYPE + COMMA_SEP +
                     "smallIMG" + TEXT_TYPE + COMMA_SEP +
                     "MBID" + TEXT_TYPE + COMMA_SEP +
                     "lastFmURL" + TEXT_TYPE + COMMA_SEP +
                     "largeIMG" + TEXT_TYPE + " )";
+
     private static final String SQL_CREATE_TRACKS =
             "CREATE TABLE " + TRACKS_TABLE + " (" +
-                    "track" + " TEXT PRIMARY KEY," +
+                    //"id" + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "name" + TEXT_TYPE + COMMA_SEP +
                     "artist" + TEXT_TYPE + COMMA_SEP +
-                    "position" + INT_TYPE + COMMA_SEP +
-                    "date" + DATE_TYPE + " )";
+                    "position" + TEXT_TYPE + " )";
 
     private static final String SQL_DELETE_ENTRIES_ARTISTS =
             "DROP TABLE IF EXISTS " + ARTISTS_TABLE;
@@ -70,15 +74,15 @@ public class Database extends SQLiteOpenHelper {
             db.close();
     }
 
-    public long addTrack(Track track) {
+    public void addTrack(Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("artist", track.getArtist());
-        values.put("track", track.getTitle());
+        values.put("name", track.getTitle());
         values.put("position", track.getPosition());
-        Date current = new Date();
-        values.put("date", current.getTime());
+        //Date current = new Date();
+        //values.put("date", current.getTime());
         // insert row
         long track_id = db.insert(TRACKS_TABLE, null, values);
 
@@ -87,65 +91,52 @@ public class Database extends SQLiteOpenHelper {
             createTodoTag(todo_id, tag_id);
         }*/
 
-        return track_id;
+
     }
 
-    public long addArtist(Artist artist){
+    public void addArtist(Artist artist){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("artist", artist.getName());
-        values.put("smallIMG", bitmapToString(artist.getSmallIMG()));
+        values.put("name", artist.getName());
+        values.put("smallIMG", artist.getSmall64());
         values.put("largeURL", artist.getLargeURL());
         values.put("MBID", artist.getMBID());
         values.put("lastFmURL", artist.getLastFmURL());
 
         long artist_id = db.insert(ARTISTS_TABLE, null, values);
-        return artist_id;
     }
 
-    public Artist getArtist(Artist artist){
+    public Artist getArtist(String name){
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query =
-                "SELECT * FROM " + ARTISTS_TABLE + " WHERE artist = '" + artist.getName() + "'";
-
+                "SELECT * FROM " + ARTISTS_TABLE + " WHERE name = '" + name + "'";
 
         Cursor c = db.rawQuery(query, null);
-
         if (c.moveToFirst()){
-            do {
-                Artist returnArtist = new Artist(artist);
-                String base64enc = c.getString(c.getColumnIndex("smallIMG"));
-                byte[] decodedString = Base64.decode(base64enc, Base64.DEFAULT);
-                returnArtist.setSmallIMG(BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length));
-                return returnArtist;
-            }while (c.moveToNext());
+            Artist returner;
+            returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndex("smallIMG")), c.getString(c.getColumnIndex("largeIMG")));
+            return returner;
         } else {return null;}
     }
 
-    private String bitmapToString(Bitmap image){
-        //Found at http://stackoverflow.com/questions/9224056/android-bitmap-to-base64-string
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
 
-    /*
-    public Track[] getAllTracks(Date day){
+    public List<Track> getAllTracks(){
 
-        String selectQuery = "SELECT * FROM " + ARTISTS_TABLE + " WHERE date=" + day.getTime();
-
+        String selectQuery = "SELECT * FROM " + TRACKS_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
+        List<Track> tracks= new ArrayList<>();
 
         if (c.moveToFirst()){
             do {
-                //Track thisTrack = new Track(c.getString(c.getColumnIndex("track")), c.getString(c.getColumnIndex("artist")), c.getInt(c.getColumnIndex("position")), );
-            } while (false);
+                tracks.add(new Track(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("artist")), c.getString(c.getColumnIndex("position"))));
+
+            } while (c.moveToNext());
         }
-        //Track[] tracks= new Track[];
-    }*/
+
+        return tracks;
+    }
 
 }

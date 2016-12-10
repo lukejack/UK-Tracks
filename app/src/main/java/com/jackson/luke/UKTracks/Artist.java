@@ -15,8 +15,8 @@ public class Artist implements Serializable{
     private String lastFmURL;
     private String MBID;
 
-    private Bitmap smallIMG;
-    private Bitmap largeIMG;
+    private String smallIMG;
+    private String largeIMG;
 
     public Artist(String _name, String _smallURL, String _largeURL, String _lastFmURL, String _MBID){
         this.name = _name;
@@ -24,6 +24,16 @@ public class Artist implements Serializable{
         this.largeURL = _largeURL;
         this.lastFmURL = _lastFmURL;
         this.MBID = _MBID;
+    }
+
+    public Artist(String _name, String _smallURL, String _largeURL, String _lastFmURL, String _MBID, String smallIMG, String largeIMG){
+        this.name = _name;
+        this.smallURL = _smallURL;
+        this.largeURL = _largeURL;
+        this.lastFmURL = _lastFmURL;
+        this.MBID = _MBID;
+        this.smallIMG = smallIMG;
+        this.largeIMG = largeIMG;
     }
 
     public Artist(Artist artist){
@@ -39,9 +49,13 @@ public class Artist implements Serializable{
     public String getLargeURL(){return largeURL;}
     public String getLastFmURL(){return lastFmURL;}
     public String getMBID(){return MBID;}
-    public Bitmap getSmallIMG(){return smallIMG;}
-    public Bitmap getLargeIMG(){return largeIMG;}
+    public Bitmap getSmallIMG(){return Bitmap64.toBitmap(smallIMG);}
+    public Bitmap getLargeIMG(){return Bitmap64.toBitmap(largeIMG);}
+    public String getSmall64(){return smallIMG;}
+    public String getLarge64(){return largeIMG;}
 
-    public void setSmallIMG(Bitmap image){smallIMG = image;}
-    public void setLargeIMG(Bitmap image){largeIMG = image;}
+    public void setSmallIMG(Bitmap image){smallIMG = Bitmap64.to64(image);}
+    public void setSmallIMG(String image){smallIMG = image;}
+    public void setLargeIMG(Bitmap image){largeIMG = Bitmap64.to64(image);}
+    public void setLargeIMG(String image){largeIMG = image;}
 }
