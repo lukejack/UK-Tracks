@@ -11,7 +11,9 @@ import android.util.Base64;
 
 import java.awt.font.TextAttribute;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "ArtistTracks2.db";
+    public static final String DATABASE_NAME = "ArtistTracks3.db";
 
     private static final String ARTISTS_TABLE = "artists";
     private static final String TRACKS_TABLE = "tracks";
@@ -42,7 +44,8 @@ public class Database extends SQLiteOpenHelper {
                     //"id" + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "name" + TEXT_TYPE + COMMA_SEP +
                     "artist" + TEXT_TYPE + COMMA_SEP +
-                    "position" + TEXT_TYPE + " )";
+                    "position" + TEXT_TYPE + COMMA_SEP +
+                    "date" + DATE_TYPE + " )";
 
     private static final String SQL_DELETE_ENTRIES_ARTISTS =
             "DROP TABLE IF EXISTS " + ARTISTS_TABLE;
@@ -77,21 +80,40 @@ public class Database extends SQLiteOpenHelper {
     public void addTrack(Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String date = df.format(c.getTime());
+
         ContentValues values = new ContentValues();
         values.put("artist", track.getArtist());
         values.put("name", track.getTitle());
         values.put("position", track.getPosition());
-        //Date current = new Date();
-        //values.put("date", current.getTime());
-        // insert row
+        values.put("date", date);
         long track_id = db.insert(TRACKS_TABLE, null, values);
 
-        /*
-        for (long tag_id : tag_ids) {
-            createTodoTag(todo_id, tag_id);
-        }*/
+    }
 
+    public List<Track> getTracks(Date date){
+        String selectQuery = "SELECT * FROM " + TRACKS_TABLE + " WHERE date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        List<Track> tracks= new ArrayList<>();
 
+        if (c.moveToFirst()){
+            do {
+                tracks.add(new Track(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("artist")), c.getString(c.getColumnIndex("position"))));
+                String dateofthis = c.getString(c.getColumnIndex("date"));
+                int i = 1;
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return tracks;
+    }
+
+    public void updateTracks(Track[] tracks, Date date){
+        List<Track> dbTracks = new ArrayList<>();
+        dbTracks = getTracks(date);
     }
 
     public void addArtist(Artist artist){
@@ -103,6 +125,7 @@ public class Database extends SQLiteOpenHelper {
         values.put("largeURL", artist.getLargeURL());
         values.put("MBID", artist.getMBID());
         values.put("lastFmURL", artist.getLastFmURL());
+
 
         long artist_id = db.insert(ARTISTS_TABLE, null, values);
     }
@@ -116,27 +139,44 @@ public class Database extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
         if (c.moveToFirst()){
             Artist returner;
-            returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndex("smallIMG")), c.getString(c.getColumnIndex("largeIMG")));
+            returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG")));
+            c.close();
             return returner;
         } else {return null;}
+
     }
 
-
-    public List<Track> getAllTracks(){
-
-        String selectQuery = "SELECT * FROM " + TRACKS_TABLE;
+    public void updateArtists(Artist[] artists){
+        String query =
+                "SELECT * FROM " + ARTISTS_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery, null);
-        List<Track> tracks= new ArrayList<>();
+        Cursor c = db.rawQuery(query, null);
+
+        List<Artist> dbArtists = new ArrayList<>();
 
         if (c.moveToFirst()){
             do {
-                tracks.add(new Track(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("artist")), c.getString(c.getColumnIndex("position"))));
-
+                dbArtists.add(new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG"))));
             } while (c.moveToNext());
         }
 
-        return tracks;
+        for (Artist inA : artists) {
+            boolean found = false;
+            for (Artist dbA : dbArtists) {
+                if (dbA.getName().equals(inA.getName())) {
+                    found = true;
+                    break;
+                }
+            }
+            //Isn't in the database
+            if (!found){
+                addArtist(inA);
+            }
+        }
+
+        c.close();
     }
+
+
 
 }

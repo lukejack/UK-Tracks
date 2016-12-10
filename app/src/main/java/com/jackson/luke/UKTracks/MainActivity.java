@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     private TrackManager manager = new TrackManager(activity, this);
     private Artist[] artists;
     private Track[] tracks;
+    private Database db = new Database(this);
 
 
     @Override
@@ -56,9 +58,16 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 startActivity(intent);
             }
         });
-        Database db = new Database(activity);
-        db.addArtist(new Artist("name", "small", "large", "last", "mbid"));
-        Artist test = db.getArtist("name");
+        //Database db = new Database(activity);
+        //this.deleteDatabase("ArtistTracks3.db");
+        //Artist[] test = new Artist[1];
+        //test[0] = new Artist("aa", "ab", "ac", "ad", "ae");
+        //db.updateArtists(test);
+        //db.addArtist(new Artist("a", "small", "large", "last", "mbid"));
+        //Artist test = db.getArtist("name");
+        //db.addTrack(new Track("a", "b", "c"));
+        //List<Track> tracks = new ArrayList<>();
+        //tracks = db.getTracks(Calendar.getInstance().getTime());
     }
 
     public void onReturn(Pair<Track[], Artist[]> data){
@@ -76,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         }
         TrackAdapter adapter2 = new TrackAdapter(this, listData.toArray(new ListedTrack[listData.size()]));
         listView.setAdapter(adapter2);
+        db.updateArtists(artists);
+        Artist first = db.getArtist("The Weeknd");
+        Artist second = db.getArtist("The xx");
     }
 
     @Override
