@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     //Construct track manager with activity reference for data return
     private TrackManager manager = new TrackManager(activity, this);
-    private Artist[] artists;
-    private Track[] tracks;
+    private List<Artist> artists = new ArrayList<>();
+    private List<Track> tracks = new ArrayList<>();
     private Database db = new Database(this);
 
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
                 Intent intent = new Intent(activity, DetailActivity.class);
 
-                Track selected = tracks[position];
+                Track selected = tracks.get(position);
                 for (Artist a : artists){
                     if (a.getName().equals(selected.getArtist())){
                         intent.putExtra("artist", a);
@@ -58,19 +58,31 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 startActivity(intent);
             }
         });
-        //Database db = new Database(activity);
         //this.deleteDatabase("ArtistTracks3.db");
         //Artist[] test = new Artist[1];
         //test[0] = new Artist("aa", "ab", "ac", "ad", "ae");
         //db.updateArtists(test);
         //db.addArtist(new Artist("a", "small", "large", "last", "mbid"));
         //Artist test = db.getArtist("name");
-        //db.addTrack(new Track("a", "b", "c"));
+        //List<Track> test = new ArrayList<>();
+
+
+        //for (Track t : test)
+        //    db.addTrack(t);
+
+        //test.clear();
+        //test.add(new Track("a", "b", "c"));
+        //test.add(new Track("a", "132123123", "d"));
+        //test.add(new Track("097214309874320987", "b", "f"));
+
+        //db.updateTracks(test, Calendar.getInstance().getTime());
+        //db.addImageLargeArtist("a", "IMAGE OVER HERE");
+
         //List<Track> tracks = new ArrayList<>();
         //tracks = db.getTracks(Calendar.getInstance().getTime());
     }
 
-    public void onReturn(Pair<Track[], Artist[]> data){
+    public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data){
         List<ListedTrack> listData = new ArrayList<>();
         tracks = data.first;
         artists = data.second;
@@ -85,9 +97,10 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         }
         TrackAdapter adapter2 = new TrackAdapter(this, listData.toArray(new ListedTrack[listData.size()]));
         listView.setAdapter(adapter2);
+
         db.updateArtists(artists);
-        Artist first = db.getArtist("The Weeknd");
-        Artist second = db.getArtist("The xx");
+        db.updateTracks(tracks, Calendar.getInstance().getTime());
+
     }
 
     @Override

@@ -42,6 +42,11 @@ public class Track implements Serializable{
         }
     }*/
 
+
+    public boolean equals(Track track){
+        return (title.equals(track.getTitle()) && artist.equals(track.getArtist()) && position.equals(track.getPosition()));
+    }
+
     public String getTitle(){return title;}
     public String getArtist(){return artist;}
     public String getPosition(){return position;}

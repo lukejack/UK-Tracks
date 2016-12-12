@@ -3,6 +3,15 @@
 
     <item
         is-multidex="true"
+        jar="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-22.2.1_1220f43a1acb9adf19e0d3325b54348449f7a383\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\Luke\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
         jumboMode="true"
         optimize="true"
@@ -16,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="ff06368fceda533e279cd0c8e19a428f8c92b9a0">
+        sha1="e92f21ce2bfe4d41e787d09e32b7326ee965676c">
         <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_faca995235e6bc687b27ab1b90ee0aa86a046ce3\classes.dex" />
     </item>
     <item
@@ -25,26 +34,8 @@
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="5102878b23931397a2f9f48e30fc9ad5a5dcb510">
+        sha1="274069f706150f678f9a40939c116699b58baa4f">
         <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_441026ce5f477aabff43324fa19ab779ffbbae25\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="22.0.1"
-        sha1="f8efd0096475e0daf054267b61544e10dc776503">
-        <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-22.2.1_2fc7c4261a82849ca3bc7839ef3657dd120814dd\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="22.0.1"
-        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
-        <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-22.2.1_1220f43a1acb9adf19e0d3325b54348449f7a383\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -54,6 +45,15 @@
         revision="22.0.1"
         sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
         <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-22.2.1_89f7256a39e094759ac08b0da921c7abbe35c5f4\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-22.2.1_2fc7c4261a82849ca3bc7839ef3657dd120814dd\classes.dex" />
     </item>
     <item
         is-multidex="true"

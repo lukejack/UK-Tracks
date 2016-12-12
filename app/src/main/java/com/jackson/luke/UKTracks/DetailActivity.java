@@ -13,6 +13,8 @@ import android.widget.TextView;
 public class DetailActivity extends AppCompatActivity implements BasicImageDownloader.OnImageLoaderListener {
     private Artist artist;
     private Track track;
+    ImageView artHolder;
+    Database db = new Database(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +33,19 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         titleHolder.setText(track.getTitle());
         TextView artistHolder = (TextView) findViewById(R.id.artist);
         artistHolder.setText(artist.getName());
+        artHolder = (ImageView)findViewById(R.id.art);
 
-        new BasicImageDownloader(this).download(artist.getLargeURL(), false, 0);
+        Artist fromDb = db.getArtist(artist.getName());
+        if (fromDb.getLarge64() == null)
+            new BasicImageDownloader(this).download(artist.getLargeURL(), false, 0);
+        else
+            artHolder.setImageBitmap(fromDb.getLargeIMG());
+
     }
 
     @Override
     public void onImageDownload(Bitmap result, int position) {
-        ImageView artHolder = (ImageView )findViewById(R.id.art);
+        db.addImageLargeArtist(artist.getName(), Bitmap64.to64(result));
         artHolder.setImageBitmap(result);
     }
 

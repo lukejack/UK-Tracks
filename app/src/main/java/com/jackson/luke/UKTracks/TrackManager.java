@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
     private static boolean initialised = false;
     private static ReceiveTrack caller;
     private static Track[] tracks;
-    private static List<Artist> artists = new ArrayList<Artist>();
+    private static ArrayList<Artist> artists = new ArrayList<Artist>();
     private static Database db;
 
 
@@ -30,7 +31,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
 
     public TrackManager(ReceiveTrack _caller, MainActivity context) {
         this.caller = _caller;
-        //db = new Database(context);
+        db = new Database(context);
     }
 
     public void getInstance(Boolean networkAvailable) {
@@ -84,10 +85,20 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                                     , imageLinks.getJSONObject(3).getString("#text")
                                     , artist.getString("url")
                                     , artist.getString("mbid"));
+
+
                             artists.add(thisArtist);
                             artistCount++;
 
+
                             downloader.download(imageLinks.getJSONObject(1).getString("#text"), false, artistCount);
+                            /* RETRIEVAL OF SMALL IMAGE
+                            Artist fromDB = db.getArtist(thisArtist.getName());
+                            if (fromDB == null)
+
+                            else
+                                onImageDownload(fromDB.getSmallIMG(), artistCount);
+                            */
 
                             /*
                             //Call ONCOMPLETE with bitmap if artist exists in database
@@ -105,6 +116,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                 }
             }catch (Exception e){
                 caller.postToast("Unexpected data format received: " + e.getMessage());
+                Log.e("thrown", "error", e);
             }
         }
     }
@@ -134,7 +146,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
     public void onImageDownload(Bitmap result, int position){
         artists.get(position).setSmallIMG(result);
         if (++imageCount == artists.size()){
-            caller.onReturn(new Pair<>(tracks, artists.toArray(new Artist[artists.size()])));
+            caller.onReturn(new Pair<>(new ArrayList<>(Arrays.asList(tracks)), artists));
         }
     }
 

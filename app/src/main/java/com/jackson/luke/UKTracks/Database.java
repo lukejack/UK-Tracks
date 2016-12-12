@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import java.awt.font.TextAttribute;
 import java.io.ByteArrayOutputStream;
@@ -91,6 +92,7 @@ public class Database extends SQLiteOpenHelper {
         values.put("date", date);
         long track_id = db.insert(TRACKS_TABLE, null, values);
 
+        db.close();
     }
 
     public List<Track> getTracks(Date date){
@@ -111,9 +113,33 @@ public class Database extends SQLiteOpenHelper {
         return tracks;
     }
 
-    public void updateTracks(Track[] tracks, Date date){
-        List<Track> dbTracks = new ArrayList<>();
+    public void updateTracks(List<Track> tracks, Date date){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Track> dbTracks;
         dbTracks = getTracks(date);
+
+
+        Boolean notSame = false;
+
+        for (int i = 0; i < dbTracks.size(); i++)
+        {
+                notSame = !dbTracks.get(i).equals(tracks.get(i));
+                if (notSame){break;}
+        }
+
+        if (notSame)
+        {
+            Log.v("DATABASE", "Not the same set!");
+            //Delete the current day's entries in the database
+            //String where = "date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')";
+            db.delete(TRACKS_TABLE, "date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')", null);
+
+            for (Track t : tracks){
+                addTrack(t);
+            }
+        }
+        db.close();
     }
 
     public void addArtist(Artist artist){
@@ -125,9 +151,20 @@ public class Database extends SQLiteOpenHelper {
         values.put("largeURL", artist.getLargeURL());
         values.put("MBID", artist.getMBID());
         values.put("lastFmURL", artist.getLastFmURL());
-
-
         long artist_id = db.insert(ARTISTS_TABLE, null, values);
+
+        db.close();
+    }
+
+    public void addImageLargeArtist(String name, String image){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "UPDATE " + ARTISTS_TABLE + " SET largeIMG = ";
+
+
+        ContentValues cv = new ContentValues();
+        cv.put("largeIMG", image);
+        db.update(ARTISTS_TABLE, cv, "name='"+name + "'", null);
+        db.close();
     }
 
     public Artist getArtist(String name){
@@ -141,16 +178,21 @@ public class Database extends SQLiteOpenHelper {
             Artist returner;
             returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG")));
             c.close();
+            db.close();
             return returner;
-        } else {return null;}
+        } else {
+            db.close();
+            return null;}
+
 
     }
 
-    public void updateArtists(Artist[] artists){
+    public void updateArtists(List<Artist> artists){
         String query =
                 "SELECT * FROM " + ARTISTS_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
+
 
         List<Artist> dbArtists = new ArrayList<>();
 
@@ -175,6 +217,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         c.close();
+        db.close();
     }
 
 
