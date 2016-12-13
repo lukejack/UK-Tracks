@@ -48,6 +48,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
             } else {
                 //Network unavailable
                 caller.postToast("Unable to find a network connection");
+
             }
         } else {
             //The data is recieved and formatted successfully
@@ -61,59 +62,48 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
             caller.postToast("Unable to connect to web server");
         } else {
             try {
-                //XML check; parse as JSON
-                if (!data.startsWith("<")) {
-                    JSONArray wholeJSON = new JSONObject(data).getJSONObject("tracks").getJSONArray("track");
-                    tracks = new Track[wholeJSON.length()];
+               JSONArray wholeJSON = new JSONObject(data).getJSONObject("tracks").getJSONArray("track");
+               tracks = new Track[wholeJSON.length()];
+               artists.clear();
+               for (int i = 0; i < wholeJSON.length(); i++) {
 
-                    artists.clear();
-                    int artistCount = -1;
+                   //Iterate through each track in the JSON and construct them into tracks for tracks[]
+                   JSONObject trackData = wholeJSON.getJSONObject(i);
+                   String trackName = trackData.getString("name");
+                   JSONObject artist = trackData.getJSONObject("artist");
+                   tracks[i] = new Track(trackName, artist.getString("name"), Integer.toString(i + 1));
 
-                    for (int i = 0; i < wholeJSON.length(); i++) {
-                        BasicImageDownloader downloader = new BasicImageDownloader(this);
-                        //Iterate through each track in the JSON and construct them into tracks for tracks[]
-                        JSONObject trackData = wholeJSON.getJSONObject(i);
-                        String trackName = trackData.getString("name");
-                        JSONObject artist = trackData.getJSONObject("artist");
-                        JSONArray imageLinks = trackData.getJSONArray("image");
-
-                        tracks[i] = new Track(trackName, artist.getString("name"), Integer.toString(i + 1));
-
-                        if (artistUnique(artists, artist.getString("name"))){
-                            Artist thisArtist = new Artist(artist.getString("name")
-                                    , imageLinks.getJSONObject(1).getString("#text")
-                                    , imageLinks.getJSONObject(3).getString("#text")
-                                    , artist.getString("url")
-                                    , artist.getString("mbid"));
+                   if (artistUnique(artists, artist.getString("name"))){
+                       JSONArray imageLinks = trackData.getJSONArray("image");
+                       Artist thisArtist = new Artist(artist.getString("name")
+                               , imageLinks.getJSONObject(0).getString("#text")
+                               , imageLinks.getJSONObject(3).getString("#text")
+                               , artist.getString("url")
+                               , artist.getString("mbid"));
 
 
-                            artists.add(thisArtist);
-                            artistCount++;
+                       artists.add(thisArtist);
+                   }
+               }
 
 
-                            downloader.download(imageLinks.getJSONObject(1).getString("#text"), false, artistCount);
-                            /* RETRIEVAL OF SMALL IMAGE
-                            Artist fromDB = db.getArtist(thisArtist.getName());
-                            if (fromDB == null)
+               int artistCount = -1;
+               for(Artist a : artists)
+               {
+                   artistCount++;
+                   BasicImageDownloader downloader = new BasicImageDownloader(this);
+                   Bitmap fromDB = db.getImage(a.getName(), "smallIMG");
+                   if (fromDB == null){
+                       downloader.download(a.getSmallURL(), false, artistCount);
+                   }
+                   else
+                       onImageDownload(fromDB, artistCount);
+               }
 
-                            else
-                                onImageDownload(fromDB.getSmallIMG(), artistCount);
-                            */
+               //Data exists in tracks[]
+               initialised = true;
+               //Pass back to calling activity
 
-                            /*
-                            //Call ONCOMPLETE with bitmap if artist exists in database
-                            Artist databaseArtist = db.getArtist(thisArtist);
-                            if (databaseArtist != null){
-                                onImageDownload(databaseArtist.getSmallIMG(), artistCount);
-                            } else {
-                            downloader.download(smallImgURL, false, artistCount);
-                            }*/
-                        }
-                    }
-                    //Data exists in tracks[]
-                    initialised = true;
-                    //Pass back to calling activity
-                }
             }catch (Exception e){
                 caller.postToast("Unexpected data format received: " + e.getMessage());
                 Log.e("thrown", "error", e);

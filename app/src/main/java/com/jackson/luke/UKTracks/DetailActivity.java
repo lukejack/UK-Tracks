@@ -35,11 +35,11 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         artistHolder.setText(artist.getName());
         artHolder = (ImageView)findViewById(R.id.art);
 
-        Artist fromDb = db.getArtist(artist.getName());
-        if (fromDb.getLarge64() == null)
+        Bitmap fromDB = db.getImage(artist.getName(), "largeIMG");
+        if (fromDB == null)
             new BasicImageDownloader(this).download(artist.getLargeURL(), false, 0);
         else
-            artHolder.setImageBitmap(fromDb.getLargeIMG());
+            artHolder.setImageBitmap(fromDB);
 
     }
 

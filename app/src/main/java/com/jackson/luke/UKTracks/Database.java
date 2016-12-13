@@ -171,7 +171,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query =
-                "SELECT * FROM " + ARTISTS_TABLE + " WHERE name = '" + name + "'";
+                "SELECT * FROM " + ARTISTS_TABLE + " WHERE name = '" + name + "' LIMIT 1";
 
         Cursor c = db.rawQuery(query, null);
         if (c.moveToFirst()){
@@ -185,6 +185,21 @@ public class Database extends SQLiteOpenHelper {
             return null;}
 
 
+    }
+
+    public Bitmap getImage(String name, String imageType){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT " + imageType + " FROM " + ARTISTS_TABLE + " WHERE name='" + name + "' LIMIT 1";
+
+        Cursor c = db.rawQuery(query, null);
+        if (c.moveToFirst() && (c.getString(c.getColumnIndex(imageType)) != null)){
+            //c.close();
+            db.close();
+            return Bitmap64.toBitmap(c.getString(c.getColumnIndex(imageType)));
+        } else {
+            db.close();
+            return null;}
     }
 
     public void updateArtists(List<Artist> artists){
