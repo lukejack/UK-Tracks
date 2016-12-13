@@ -1,28 +1,35 @@
 package com.jackson.luke.UKTracks;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ListPopupWindow;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Space;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
@@ -31,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     //Construct track manager with activity reference for data return
     private TrackManager manager = new TrackManager(activity, this);
-    private List<Artist> artists = new ArrayList<>();
-    private List<Track> tracks = new ArrayList<>();
+    private ArrayList<Artist> artists = new ArrayList<>();
+    private ArrayList<Track> tracks = new ArrayList<>();
     private Database db = new Database(this);
 
 
@@ -41,12 +48,12 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        List<Date> dates = db.getDaysWithData();
         //Get UI components
         listView = (ListView) findViewById(R.id.tweetList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
                 Intent intent = new Intent(activity, DetailActivity.class);
-
                 Track selected = tracks.get(position);
                 for (Artist a : artists){
                     if (a.getName().equals(selected.getArtist())){
@@ -55,10 +62,10 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                     }
                 }
                 intent.putExtra("track", selected);
-
                 startActivity(intent);
             }
         });
+        manager.getInstance(isNetworkAvailable(getApplicationContext()));
         //this.deleteDatabase("ArtistTracks3.db");
         //Artist[] test = new Artist[1];
         //test[0] = new Artist("aa", "ab", "ac", "ad", "ae");
@@ -83,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         //tracks = db.getTracks(Calendar.getInstance().getTime());
     }
 
-    public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data){
+    public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data, boolean newData){
         List<ListedTrack> listData = new ArrayList<>();
         tracks = data.first;
         artists = data.second;
@@ -99,8 +106,10 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         TrackAdapter adapter2 = new TrackAdapter(this, listData.toArray(new ListedTrack[listData.size()]));
         listView.setAdapter(adapter2);
 
-        db.updateArtists(artists);
-        db.updateTracks(tracks, Calendar.getInstance().getTime());
+        if (newData) {
+            db.updateArtists(artists);
+            db.updateTracks(tracks, Calendar.getInstance().getTime());
+        }
 
     }
 
@@ -119,6 +128,31 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
             case R.id.refresh:
                 manager.getInstance(isNetworkAvailable(getApplicationContext()));
                 return true;
+            case R.id.selectDay:
+                final ArrayList<Date> dates = new ArrayList<>(db.getDaysWithData());
+                String[] textDates = new String[dates.size()];
+                for (int i = 0; i < dates.size(); i++){
+                    DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
+                    textDates[i] = dbFormat.format(dates.get(i));
+                }
+                ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, textDates);
+                final ListPopupWindow dateSelection = new ListPopupWindow(activity);
+                dateSelection.setAdapter(adapter);
+                dateSelection.setWidth(400);
+                dateSelection.setHeight(600);
+                Space anchorPoint = (Space) findViewById(R.id.anchor);
+                dateSelection.setAnchorView(anchorPoint);
+
+                dateSelection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+                        Log.v("Position", Integer.toString(position));
+                        ArrayList<Track> dbTracks = db.getTracks(dates.get(position));
+                        onReturn(new Pair<>(dbTracks, artists), false);
+                        dateSelection.dismiss();
+                    }
+                });
+                dateSelection.show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -126,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     public void postToast(String text){
         Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }

@@ -11,10 +11,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
 
 
 public class TrackManager implements ReceiveString, BasicImageDownloader.OnImageLoaderListener{
@@ -47,8 +50,20 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                 }
             } else {
                 //Network unavailable
-                caller.postToast("Unable to find a network connection");
 
+                List<Date> dates = db.getDaysWithData();
+
+                if (dates.size() != 0) {
+                    Date lastDatabaseDay = dates.get(dates.size() - 1);
+                    DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
+                    caller.postToast("No internet connection, displaying tracks for " + dbFormat.format(lastDatabaseDay));
+                    ArrayList<Track> dbTracks = new ArrayList<>(db.getTracks(lastDatabaseDay));
+                    ArrayList<Artist> artists = new ArrayList<>(db.getTrackArtists(dbTracks));
+
+                    caller.onReturn(new Pair<>(dbTracks, artists), false);
+                } else {
+                    caller.postToast("Unable to find a network connection or cached tracks");
+                }
             }
         } else {
             //The data is recieved and formatted successfully
@@ -136,7 +151,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
     public void onImageDownload(Bitmap result, int position){
         artists.get(position).setSmallIMG(result);
         if (++imageCount == artists.size()){
-            caller.onReturn(new Pair<>(new ArrayList<>(Arrays.asList(tracks)), artists));
+            caller.onReturn(new Pair<>(new ArrayList<>(Arrays.asList(tracks)), artists), true);
         }
     }
 

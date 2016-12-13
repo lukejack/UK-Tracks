@@ -41,6 +41,7 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         else
             artHolder.setImageBitmap(fromDB);
 
+
     }
 
     @Override

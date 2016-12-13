@@ -12,6 +12,7 @@ import android.util.Log;
 
 import java.awt.font.TextAttribute;
 import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,22 +96,44 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Track> getTracks(Date date){
+    public ArrayList<Track> getTracks(Date date){
         String selectQuery = "SELECT * FROM " + TRACKS_TABLE + " WHERE date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
-        List<Track> tracks= new ArrayList<>();
+        ArrayList<Track> tracks= new ArrayList<>();
 
         if (c.moveToFirst()){
             do {
                 tracks.add(new Track(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("artist")), c.getString(c.getColumnIndex("position"))));
-                String dateofthis = c.getString(c.getColumnIndex("date"));
-                int i = 1;
+                //String dateofthis = c.getString(c.getColumnIndex("date"));
+
             } while (c.moveToNext());
         }
 
         c.close();
         return tracks;
+    }
+
+    public List<Date> getDaysWithData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Date> dates = new ArrayList<>();
+        String query = "SELECT DISTINCT date FROM " + TRACKS_TABLE;
+        Cursor c = db.rawQuery(query, null);
+
+        if (c.moveToFirst()){
+            do {
+                DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
+                try {
+                    dates.add(dbFormat.parse(c.getString(c.getColumnIndex("date"))));
+                } catch (Exception e)
+                {
+
+                }
+            } while (c.moveToNext());
+        }
+        db.close();
+        c.close();
+        return dates;
     }
 
     public void updateTracks(List<Track> tracks, Date date){
@@ -122,10 +145,15 @@ public class Database extends SQLiteOpenHelper {
 
         Boolean notSame = false;
 
-        for (int i = 0; i < dbTracks.size(); i++)
+        if (dbTracks.size() == 0)
         {
+            notSame = true;
+        } else {
+            for (int i = 0; i < dbTracks.size(); i++)
+            {
                 notSame = !dbTracks.get(i).equals(tracks.get(i));
                 if (notSame){break;}
+            }
         }
 
         if (notSame)
@@ -185,6 +213,23 @@ public class Database extends SQLiteOpenHelper {
             return null;}
 
 
+    }
+
+    public ArrayList<Artist> getTrackArtists(ArrayList<Track> tracks){
+        ArrayList<Artist> artists = new ArrayList<>();
+        for (Track t : tracks)
+        {
+            boolean alreadyExists = false;
+            for (Artist a : artists)
+            {
+                if (a.getName().equals(t.getArtist())){
+                 alreadyExists = true;
+                }
+            }
+            if (!alreadyExists)
+                artists.add(getArtist(t.getArtist()));
+        }
+        return artists;
     }
 
     public Bitmap getImage(String name, String imageType){
