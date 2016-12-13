@@ -49,7 +49,7 @@ public class Artist implements Serializable{
     public String getLargeURL(){return largeURL;}
     public String getLastFmURL(){return lastFmURL;}
     public String getMBID(){return MBID;}
-    public Bitmap getSmallIMG(){return Bitmap64.toBitmap(smallIMG);}
+    public Bitmap getSmallIMG(){return (smallIMG == null) ? null : Bitmap64.toBitmap(smallIMG);}
     public Bitmap getLargeIMG(){return Bitmap64.toBitmap(largeIMG);}
     public String getSmall64(){return smallIMG;}
     public String getLarge64(){return largeIMG;}

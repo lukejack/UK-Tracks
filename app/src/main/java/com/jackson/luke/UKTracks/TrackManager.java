@@ -4,6 +4,8 @@ package com.jackson.luke.UKTracks;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,22 +26,26 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
 
     private static boolean initialised = false;
     private static ReceiveTrack caller;
+    private static MainActivity context;
     private static Track[] tracks;
     private static ArrayList<Artist> artists = new ArrayList<Artist>();
     private static Database db;
+    private ProgressBar progressBar;
 
 
     private static List<ListedTrack> returnList = new ArrayList<ListedTrack>();
     private int imageCount = 0;
 
-    public TrackManager(ReceiveTrack _caller, MainActivity context) {
+    public TrackManager(ReceiveTrack _caller, MainActivity _context) {
         this.caller = _caller;
+        context = _context;
         db = new Database(context);
     }
 
     public void getInstance(Boolean networkAvailable) {
+        progressBar = (ProgressBar) context.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         //Pull data if it is not initialised
-        if (!initialised) {
             if (networkAvailable){
                 try {
                     //Call asynchronous network downloading object and pass this reference for message return
@@ -54,21 +60,19 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                 List<Date> dates = db.getDaysWithData();
 
                 if (dates.size() != 0) {
-                    Date lastDatabaseDay = dates.get(dates.size() - 1);
                     DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
-                    caller.postToast("No internet connection, displaying tracks for " + dbFormat.format(lastDatabaseDay));
-                    ArrayList<Track> dbTracks = new ArrayList<>(db.getTracks(lastDatabaseDay));
+                    caller.postToast("No internet connection, displaying tracks for " + dbFormat.format(dates.get(0)));
+                    ArrayList<Track> dbTracks = new ArrayList<>(db.getTracks(dates.get(0)));
                     ArrayList<Artist> artists = new ArrayList<>(db.getTrackArtists(dbTracks));
+
 
                     caller.onReturn(new Pair<>(dbTracks, artists), false);
                 } else {
                     caller.postToast("Unable to find a network connection or cached tracks");
+
                 }
+                progressBar.setVisibility(View.INVISIBLE);
             }
-        } else {
-            //The data is recieved and formatted successfully
-            //caller.onReturn(tracks);
-        }
     }
 
     public void onPullComplete(String data){
@@ -114,11 +118,6 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                    else
                        onImageDownload(fromDB, artistCount);
                }
-
-               //Data exists in tracks[]
-               initialised = true;
-               //Pass back to calling activity
-
             }catch (Exception e){
                 caller.postToast("Unexpected data format received: " + e.getMessage());
                 Log.e("thrown", "error", e);
@@ -151,6 +150,8 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
     public void onImageDownload(Bitmap result, int position){
         artists.get(position).setSmallIMG(result);
         if (++imageCount == artists.size()){
+            imageCount = 0;
+            progressBar.setVisibility(View.INVISIBLE);
             caller.onReturn(new Pair<>(new ArrayList<>(Arrays.asList(tracks)), artists), true);
         }
     }

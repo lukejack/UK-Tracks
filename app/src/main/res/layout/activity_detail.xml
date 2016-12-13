@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/lib/com.jackson.luke.UKTracks"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,6 +23,17 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
+
     <include layout="@layout/content_detail" />
+
+    <Button
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/lastFM"
+        android:background="@mipmap/lastfm"
+        android:layout_margin="15dp"
+        app2:layout_anchorGravity="bottom|center_horizontal"
+        android:layout_gravity="bottom|right" />
 
 </android.support.design.widget.CoordinatorLayout>

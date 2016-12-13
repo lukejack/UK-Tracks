@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     private ArrayList<Artist> artists = new ArrayList<>();
     private ArrayList<Track> tracks = new ArrayList<>();
     private Database db = new Database(this);
+    private ProgressBar progressBar;
 
 
     @Override
@@ -48,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
         List<Date> dates = db.getDaysWithData();
         //Get UI components
         listView = (ListView) findViewById(R.id.tweetList);
@@ -90,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         //tracks = db.getTracks(Calendar.getInstance().getTime());
     }
 
+
+    /*
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager.getInstance(isNetworkAvailable(getApplicationContext()));
+    }*/
+
     public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data, boolean newData){
         List<ListedTrack> listData = new ArrayList<>();
         tracks = data.first;
@@ -113,6 +126,33 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     }
 
+    public void drawDateSelection(){
+        final ArrayList<Date> dates = new ArrayList<>(db.getDaysWithData());
+        String[] textDates = new String[dates.size()];
+        for (int i = 0; i < dates.size(); i++){
+            DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
+            textDates[i] = dbFormat.format(dates.get(i));
+        }
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, textDates);
+        final ListPopupWindow dateSelection = new ListPopupWindow(activity);
+        dateSelection.setAdapter(adapter);
+        dateSelection.setWidth(400);
+        dateSelection.setHeight(600);
+        Space anchorPoint = (Space) findViewById(R.id.anchor);
+        dateSelection.setAnchorView(anchorPoint);
+
+        dateSelection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+                Log.v("Position", Integer.toString(position));
+                ArrayList<Track> dbTracks = db.getTracks(dates.get(position));
+                ArrayList<Artist> dbArtists = db.getTrackArtists(dbTracks);
+                onReturn(new Pair<>(dbTracks, dbArtists), false);
+                dateSelection.dismiss();
+            }
+        });
+        dateSelection.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -129,29 +169,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 manager.getInstance(isNetworkAvailable(getApplicationContext()));
                 return true;
             case R.id.selectDay:
-                final ArrayList<Date> dates = new ArrayList<>(db.getDaysWithData());
-                String[] textDates = new String[dates.size()];
-                for (int i = 0; i < dates.size(); i++){
-                    DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
-                    textDates[i] = dbFormat.format(dates.get(i));
-                }
-                ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, textDates);
-                final ListPopupWindow dateSelection = new ListPopupWindow(activity);
-                dateSelection.setAdapter(adapter);
-                dateSelection.setWidth(400);
-                dateSelection.setHeight(600);
-                Space anchorPoint = (Space) findViewById(R.id.anchor);
-                dateSelection.setAnchorView(anchorPoint);
-
-                dateSelection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-                        Log.v("Position", Integer.toString(position));
-                        ArrayList<Track> dbTracks = db.getTracks(dates.get(position));
-                        onReturn(new Pair<>(dbTracks, artists), false);
-                        dateSelection.dismiss();
-                    }
-                });
-                dateSelection.show();
+                drawDateSelection();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

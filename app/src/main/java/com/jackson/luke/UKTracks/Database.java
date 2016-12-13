@@ -23,7 +23,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "ArtistTracks3.db";
+    public static final String DATABASE_NAME = "ArtistTracksDB.db";
 
     private static final String ARTISTS_TABLE = "artists";
     private static final String TRACKS_TABLE = "tracks";
