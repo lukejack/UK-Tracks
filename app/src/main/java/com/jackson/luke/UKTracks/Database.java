@@ -23,7 +23,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "ArtistTracksDB.db";
+    public static final String DATABASE_NAME = "ArtistTracksa.db";
 
     private static final String ARTISTS_TABLE = "artists";
     private static final String TRACKS_TABLE = "tracks";
@@ -39,7 +39,10 @@ public class Database extends SQLiteOpenHelper {
                     "smallIMG" + TEXT_TYPE + COMMA_SEP +
                     "MBID" + TEXT_TYPE + COMMA_SEP +
                     "lastFmURL" + TEXT_TYPE + COMMA_SEP +
-                    "largeIMG" + TEXT_TYPE + " )";
+                    "largeIMG" + TEXT_TYPE + COMMA_SEP +
+                    "begin" + TEXT_TYPE + COMMA_SEP +
+                    "end" + TEXT_TYPE + COMMA_SEP +
+                    "country" + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_TRACKS =
             "CREATE TABLE " + TRACKS_TABLE + " (" +
@@ -184,35 +187,44 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addImageLargeArtist(String name, String image){
+    public void addImageLargeArtist(String name, String data){
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "UPDATE " + ARTISTS_TABLE + " SET largeIMG = ";
-
 
         ContentValues cv = new ContentValues();
-        cv.put("largeIMG", image);
+        cv.put("largeIMG", data);
+        db.update(ARTISTS_TABLE, cv, "name='"+name + "'", null);
+        db.close();
+    }
+
+    public void addArtistDetail(String name, String began, String ended, String country){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("begin", began);
+        cv.put("end", ended);
+        cv.put("country", country);
         db.update(ARTISTS_TABLE, cv, "name='"+name + "'", null);
         db.close();
     }
 
     public Artist getArtist(String name){
         SQLiteDatabase db = this.getReadableDatabase();
-
         String query =
                 "SELECT * FROM " + ARTISTS_TABLE + " WHERE name = '" + name + "' LIMIT 1";
-
         Cursor c = db.rawQuery(query, null);
         if (c.moveToFirst()){
             Artist returner;
             returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG")));
+            if (c.getString(c.getColumnIndex("country")) != null)
+            {
+                returner.setDetail(c.getString(c.getColumnIndex("begin")), c.getString(c.getColumnIndex("end")), c.getString(c.getColumnIndex("country")));
+            }
             c.close();
             db.close();
             return returner;
         } else {
             db.close();
             return null;}
-
-
     }
 
     public ArrayList<Artist> getTrackArtists(ArrayList<Track> tracks){

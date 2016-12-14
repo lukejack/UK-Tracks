@@ -16,7 +16,7 @@
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="7bced2e494e1961455e0fbc60b499f024012b973">
+        sha1="70b8b70f00856a7c6f1b0631c8ea7c51dbb0f815">
         <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_faca995235e6bc687b27ab1b90ee0aa86a046ce3\classes.dex" />
     </item>
     <item
@@ -25,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="22.0.1"
-        sha1="573e776d005c1c4c5239de3194b2ca3b5e2ce425">
+        sha1="69636e6a8104aa6f2279d6e3678f26502c459edf">
         <dex dex="C:\Users\Luke\Documents\GitHub\UK-Tracks\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_441026ce5f477aabff43324fa19ab779ffbbae25\classes.dex" />
     </item>
     <item

@@ -14,9 +14,11 @@ public class Artist implements Serializable{
     private String largeURL;
     private String lastFmURL;
     private String MBID;
-
     private String smallIMG;
     private String largeIMG;
+    private String begin;
+    private String end;
+    private String country;
 
     public Artist(String _name, String _smallURL, String _largeURL, String _lastFmURL, String _MBID){
         this.name = _name;
@@ -53,7 +55,15 @@ public class Artist implements Serializable{
     public Bitmap getLargeIMG(){return Bitmap64.toBitmap(largeIMG);}
     public String getSmall64(){return smallIMG;}
     public String getLarge64(){return largeIMG;}
+    public String getBegin(){return begin;}
+    public String getEnd(){return end;}
+    public String getCountry(){return country;}
 
+    public void setDetail(String _begin, String _end, String _country){
+        begin = _begin;
+        end = _end;
+        country = _country;
+    }
     public void setSmallIMG(Bitmap image){smallIMG = Bitmap64.to64(image);}
     public void setSmallIMG(String image){smallIMG = image;}
     public void setLargeIMG(Bitmap image){largeIMG = Bitmap64.to64(image);}

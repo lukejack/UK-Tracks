@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,15 +22,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:paddingTop="4dp"
+        android:paddingTop="58dp"
         android:paddingBottom="4dp"
         android:id="@+id/title"
         android:textAlignment="center"/>
 
 
     <ImageView
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="330dp"
+        android:layout_height="330dp"
         android:background="#000000"
         android:padding="2dp"
         android:id="@+id/art"
@@ -35,9 +38,9 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="TextView"
+
         android:textSize="25sp"
-        android:textColor="#000000"
+        android:textColor="#d41e07"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:layout_width="wrap_content"
@@ -46,5 +49,97 @@
         android:layout_alignStart="@+id/art"
         android:id="@+id/artist" />
 
+    <TextView
+
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/artist"
+        android:layout_alignStart="@+id/artist"
+        android:id="@+id/dates"
+        android:fontFamily="sans-serif"
+        android:textSize="22sp"
+        />
+
+    <TextView
+
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/country"
+        android:fontFamily="sans-serif"
+        android:textSize="22sp"
+        android:layout_below="@+id/artist"
+        android:layout_alignEnd="@+id/art" />
+
+
+    <TextView
+        android:text="View online at LastFM"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:id="@+id/lastfmtxt"
+        android:fontFamily="sans-serif"
+        android:textSize="22sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+
+        android:layout_alignTop="@+id/lastFM"
+        android:layout_alignStart="@+id/dates" />
+
+    <TextView
+        android:text="Search YouTube for this"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:id="@+id/youtubetxt"
+        android:fontFamily="sans-serif"
+        android:textSize="22sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_below="@+id/lastFM"
+        android:layout_alignStart="@+id/dates" />
+
+
+    <TextView
+        android:text="Search Wikipedia for this"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:id="@+id/wikipediatxt"
+        android:fontFamily="sans-serif"
+        android:textSize="22sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_below="@+id/youtubetxt"
+        android:layout_alignStart="@+id/dates" />
+
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/youtube"
+        android:background="@mipmap/youtube"
+        android:layout_alignBaseline="@+id/youtubetxt"
+        android:layout_alignBottom="@+id/youtubetxt"
+        android:layout_alignStart="@+id/lastFM" />
+
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/lastFM"
+        android:background="@mipmap/lastfm"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/country"
+        android:layout_alignEnd="@+id/country" />
+
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/wikipedia"
+        android:background="@mipmap/wikipedia"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/country" />
 
 </RelativeLayout>
+</ScrollView>
