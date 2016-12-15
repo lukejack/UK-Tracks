@@ -15,6 +15,7 @@
     tools:context="com.jackson.luke.UKTracks.DetailActivity"
     tools:showIn="@layout/activity_detail">
 
+
     <TextView
         android:textSize="35sp"
         android:textColor="#000000"
@@ -82,47 +83,48 @@
         android:id="@+id/lastfmtxt"
         android:fontFamily="sans-serif"
         android:textSize="22sp"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:gravity="start|center"
 
         android:layout_alignTop="@+id/lastFM"
-        android:layout_alignStart="@+id/dates" />
+        android:layout_alignStart="@+id/dates"
+        android:layout_toStartOf="@+id/lastFM" />
 
     <TextView
-        android:text="Search YouTube for this"
+        android:text="Search on YouTube"
         android:textColor="#000000"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:id="@+id/youtubetxt"
         android:fontFamily="sans-serif"
         android:textSize="22sp"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:layout_gravity="start"
+        android:gravity="start|center"
         android:layout_below="@+id/lastFM"
-        android:layout_alignStart="@+id/dates" />
+        android:layout_alignStart="@+id/dates"
+        android:layout_toStartOf="@+id/youtube" />
 
 
     <TextView
-        android:text="Search Wikipedia for this"
+        android:text="Search on Wikipedia"
         android:textColor="#000000"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:id="@+id/wikipediatxt"
         android:fontFamily="sans-serif"
         android:textSize="22sp"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:gravity="start|center"
         android:layout_below="@+id/youtubetxt"
-        android:layout_alignStart="@+id/dates" />
+        android:layout_alignStart="@+id/dates"
+        android:layout_toStartOf="@+id/youtube" />
 
     <Button
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:id="@+id/youtube"
         android:background="@mipmap/youtube"
-        android:layout_alignBaseline="@+id/youtubetxt"
         android:layout_alignBottom="@+id/youtubetxt"
-        android:layout_alignStart="@+id/lastFM" />
+        android:layout_alignStart="@+id/lastFM"
+        android:layout_below="@+id/lastfmtxt" />
 
     <Button
         android:layout_width="60dp"
@@ -140,6 +142,17 @@
         android:background="@mipmap/wikipedia"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/country" />
+
+    <ProgressBar
+        style="@android:style/Widget.DeviceDefault.ProgressBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center"
+        android:layout_alignBottom="@+id/art"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="113dp" />
+
 
 </RelativeLayout>
 </ScrollView>

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -22,11 +23,14 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
     private Track track;
     ImageView artHolder;
     Database db = new Database(this);
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Button lastFM = (Button) findViewById(R.id.lastFM);
@@ -105,7 +109,7 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         else
             country.setText(artist.getCountry());
 
-
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
