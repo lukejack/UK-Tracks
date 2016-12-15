@@ -1,6 +1,9 @@
 package com.jackson.luke.UKTracks;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +14,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+
+import static android.content.pm.PackageManager.GET_ACTIVITIES;
 
 public class DetailActivity extends AppCompatActivity implements BasicImageDownloader.OnImageLoaderListener, ReceiveString {
     private Artist artist;
@@ -29,6 +36,8 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+
+        //Set up UI elements we have
         TextView artistHolder = (TextView) findViewById(R.id.artist);
         artistHolder.setText("Loading...");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -42,15 +51,28 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
                 startActivity(i);
             }
         });
+
         Button youtube = (Button) findViewById(R.id.youtube);
         youtube.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_SEARCH);
-                intent.setPackage("com.google.android.youtube");
-                intent.putExtra("query", track.getArtist() + " " + track.getTitle());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                try {
+                    //Try opening in YouTube app first
+                    Intent intent = new Intent(Intent.ACTION_SEARCH);
+                    intent.setPackage("com.google.android.youtube");
+                    intent.putExtra("query", track.getArtist() + " " + track.getTitle());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //Takes a while to start, so remind the user that something is happening
+                    Toast toast = Toast.makeText(getApplicationContext(), "Opening the YouTube app...", Toast.LENGTH_SHORT);
+                    toast.show();
+                }catch(Exception e){
+                    //Use the web browser as a fallback
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("https://www.youtube.com/results?search_query=" + artist.getName().replace(" ", "+") + "+" + track.getTitle().replace(" ", "+")));
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -64,6 +86,19 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
                 startActivity(i);
             }
         });
+
+
+
+        Button google = (Button) findViewById(R.id.google);
+        google.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://www.google.co.uk/search?q=" + artist.getName().replace(" ", "+") + "+" + track.getTitle().replace(" ", "+")));
+                startActivity(i);
+            }
+        });
+
 
         artist = (Artist) getIntent().getSerializableExtra("artist");
         track = (Track) getIntent().getSerializableExtra("track");
@@ -81,8 +116,11 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         if (fromDB.getBegin() == null) {
             try {
                 new RestRequest(this).execute(new URL("http://musicbrainz.org/ws/2/artist/" + artist.getMBID() + "?inc=aliases&fmt=json"));
-            } catch (MalformedURLException e) {
-
+            } catch (Exception e) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Unable to download artist detail", Toast.LENGTH_SHORT);
+                toast.show();
+                artist = fromDB;
+                bindElements();
             }
         }
         else{
@@ -99,22 +137,22 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         artistHolder.setText(artist.getName());
 
         TextView dates = (TextView) findViewById(R.id.dates);
-        if (artist.getBegin().equals("null"))
-            dates.setText("Since: Unknown");
-        else
-            dates.setText("Since: " + artist.getBegin());
+        dates.setText("Since: " + artist.getBegin());
 
         TextView country = (TextView) findViewById(R.id.country);
-        if (artist.getCountry().equals("null"))
-            country.setText("Unknown Origin");
-        else
-            country.setText(artist.getCountry());
+        country.setText(artist.getCountry());
 
 
     }
 
     @Override
     public void onPullComplete(String result){
+
+        if (result.equals("FAil"))
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), "Unable to download artist detail", Toast.LENGTH_SHORT);
+            toast.show();
+        }
         try {
             JSONObject wholeJSON = new JSONObject(result);
             String country = wholeJSON.getString("country");
@@ -124,7 +162,8 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
             db.addArtistDetail(artist.getName(), begin, ended, country);
         }catch(JSONException j)
         {
-
+            Toast toast = Toast.makeText(getApplicationContext(), "Unable to parse downloaded artist detail", Toast.LENGTH_SHORT);
+            toast.show();
         }
         bindElements();
     }
@@ -136,8 +175,9 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
     }
 
     @Override
-    public void onError(BasicImageDownloader.ImageError error) {
-
+    public void onError(BasicImageDownloader.ImageError error, int position) {
+        Toast toast = Toast.makeText(getApplicationContext(), "Unable to download artist image", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     @Override

@@ -55,9 +55,9 @@ public class Artist implements Serializable{
     public Bitmap getLargeIMG(){return Bitmap64.toBitmap(largeIMG);}
     public String getSmall64(){return smallIMG;}
     public String getLarge64(){return largeIMG;}
-    public String getBegin(){return begin;}
+    public String getBegin(){return ((begin == (null) || begin.equals("null"))) ? "Unknown" : begin;}
     public String getEnd(){return end;}
-    public String getCountry(){return country;}
+    public String getCountry(){return ((country == null) || begin.equals("null")) ? "Unknown" : country;}
 
     public void setDetail(String _begin, String _end, String _country){
         begin = _begin;

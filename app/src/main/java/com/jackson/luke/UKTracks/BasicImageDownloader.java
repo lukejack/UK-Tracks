@@ -29,7 +29,7 @@ public class BasicImageDownloader {
     }
 
     public interface OnImageLoaderListener {
-        void onError(ImageError error);
+        void onError(ImageError error, int position);
         void onProgressChange(int percent);
         void onImageDownload(Bitmap result, int position);
     }
@@ -56,7 +56,7 @@ public class BasicImageDownloader {
             @Override
             protected void onCancelled() {
                 mUrlsInProgress.remove(imageUrl);
-                mImageLoaderListener.onError(error);
+                mImageLoaderListener.onError(error, position);
             }
 
             @Override
@@ -122,7 +122,7 @@ public class BasicImageDownloader {
                 if (result == null) {
                     Log.e(TAG, "factory returned a null result");
                     mImageLoaderListener.onError(new ImageError("downloaded file could not be decoded as bitmap")
-                            .setErrorCode(ImageError.ERROR_DECODE_FAILED));
+                            .setErrorCode(ImageError.ERROR_DECODE_FAILED), position);
                 } else {
                     Log.d(TAG, "download complete, " + result.getByteCount() +
                             " bytes transferred");

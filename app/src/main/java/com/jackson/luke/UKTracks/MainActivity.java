@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
             }
         });
         manager.getInstance(isNetworkAvailable(getApplicationContext()));
-        this.deleteDatabase("ArtistTracksa.db");
+        //this.deleteDatabase("ArtistTracksa.db");
         //Artist[] test = new Artist[1];
         //test[0] = new Artist("aa", "ab", "ac", "ad", "ae");
         //db.updateArtists(test);

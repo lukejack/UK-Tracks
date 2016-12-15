@@ -69,8 +69,4 @@ public class RestRequest extends AsyncTask<URL, Integer, String> {
         }
         return sb.toString();
     }
-
-
-
-
 }

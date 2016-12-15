@@ -26,14 +26,11 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
 
     private static boolean initialised = false;
     private static ReceiveTrack caller;
-    private static MainActivity context;
+    private MainActivity context;
     private static Track[] tracks;
     private static ArrayList<Artist> artists = new ArrayList<Artist>();
     private static Database db;
     private ProgressBar progressBar;
-
-
-    private static List<ListedTrack> returnList = new ArrayList<ListedTrack>();
     private int imageCount = 0;
 
     public TrackManager(ReceiveTrack _caller, MainActivity _context) {
@@ -99,8 +96,6 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                                , imageLinks.getJSONObject(3).getString("#text")
                                , artist.getString("url")
                                , artist.getString("mbid"));
-
-
                        artists.add(thisArtist);
                    }
                }
@@ -125,26 +120,10 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
         }
     }
 
-    private int JSONKeyCount(JSONObject jObject){
-        //contents from http://stackoverflow.com/questions/9151619/how-to-iterate-over-a-jsonobject
-        int count = 0;
-        try{
-            Iterator<?> keys = jObject.keys();
-
-        while( keys.hasNext() ) {
-            String key = (String)keys.next();
-            if ( jObject.get(key) instanceof JSONObject ) {
-                count++;
-            }
-        }} catch (Exception e){
-
-        }
-        return count;
-    }
-
     //Image downloading implementation
-    public void onError(BasicImageDownloader.ImageError error){
-
+    public void onError(BasicImageDownloader.ImageError error, int position){
+        caller.postToast("Unable to download image for " + artists.get(position).getName());
+        imageCount++;
     }
 
     public void onImageDownload(Bitmap result, int position){
@@ -156,9 +135,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
         }
     }
 
-    public void onProgressChange(int percent){
-
-    }
+    public void onProgressChange(int percent){}
 
     public boolean artistUnique(List<Artist> artists, String name){
         for (Artist i : artists){
