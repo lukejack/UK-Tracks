@@ -27,25 +27,24 @@
         android:layout_below="@+id/txtTitle"
         android:layout_toEndOf="@+id/imageView" />
 
-    <TextView
-        android:layout_width="27dp"
-        android:layout_height="50dp"
-
-        android:textSize="20sp"
-        android:id="@+id/txtPosition"
-        android:layout_alignParentStart="true"
-        />
-
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/imageView"
-
-        android:layout_marginLeft="1dp"
-        android:layout_marginRight="4dp"
-        android:background="#000000"
         android:padding="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="4dp"
+        android:background="#000000"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/txtPosition" />
+
+    <TextView
+        android:layout_width="27dp"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:id="@+id/txtPosition"
+        android:layout_centerVertical="true"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

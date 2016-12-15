@@ -23,14 +23,14 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
     private Track track;
     ImageView artHolder;
     Database db = new Database(this);
-    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
+
+        TextView artistHolder = (TextView) findViewById(R.id.artist);
+        artistHolder.setText("Loading...");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Button lastFM = (Button) findViewById(R.id.lastFM);
@@ -71,9 +71,10 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         artHolder = (ImageView)findViewById(R.id.art);
 
         Bitmap dbImage = db.getImage(artist.getName(), "largeIMG");
-        if (dbImage == null)
+        if (dbImage == null) {
             new BasicImageDownloader(this).download(artist.getLargeURL(), false, 0);
-        else
+        }
+            else
             artHolder.setImageBitmap(dbImage);
 
         Artist fromDB = db.getArtist(artist.getName());
@@ -109,7 +110,7 @@ public class DetailActivity extends AppCompatActivity implements BasicImageDownl
         else
             country.setText(artist.getCountry());
 
-        progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="fill_parent"
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -142,16 +143,6 @@
         android:background="@mipmap/wikipedia"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/country" />
-
-    <ProgressBar
-        style="@android:style/Widget.DeviceDefault.ProgressBar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center"
-        android:layout_alignBottom="@+id/art"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="113dp" />
 
 
 </RelativeLayout>

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         setContentView(R.layout.activity_main);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         progressBar.setVisibility(View.INVISIBLE);
         List<Date> dates = db.getDaysWithData();
         //Get UI components
@@ -94,14 +95,6 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         //List<Track> tracks = new ArrayList<>();
         //tracks = db.getTracks(Calendar.getInstance().getTime());
     }
-
-
-    /*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        manager.getInstance(isNetworkAvailable(getApplicationContext()));
-    }*/
 
     public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data, boolean newData){
         List<ListedTrack> listData = new ArrayList<>();
