@@ -6,11 +6,14 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 
-/**
- * Created by luke on 06/12/2016.
- */
-
 public class Bitmap64 {
+
+    /*
+        This class is purely for conversion of images between String form for storage in the
+        database and in the object representation, and Bitmap form for displaying these images
+        in the UI.
+    */
+
     static String to64(Bitmap image){
         //http://stackoverflow.com/questions/9224056/android-bitmap-to-base64-string
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

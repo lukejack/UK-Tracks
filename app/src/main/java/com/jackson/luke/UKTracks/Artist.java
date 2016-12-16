@@ -4,11 +4,9 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
-/**
- * Created by Luke on 29/11/2016.
- */
-
 public class Artist implements Serializable{
+
+    //Attributes of an Artist
     private String name;
     private String smallURL;
     private String largeURL;
@@ -45,6 +43,12 @@ public class Artist implements Serializable{
         this.lastFmURL = artist.getLastFmURL();
         this.MBID = artist.getMBID();
     }
+
+    /*
+        Public gets and sets
+        Some of these contain handling for possible null cases
+        Some of these are not used throughout the code but have been used in previous versions and for testing
+    */
 
     public String getName(){return name;}
     public String getSmallURL(){return smallURL;}

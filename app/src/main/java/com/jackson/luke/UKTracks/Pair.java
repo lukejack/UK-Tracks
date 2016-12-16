@@ -1,10 +1,7 @@
 package com.jackson.luke.UKTracks;
 
-/**
- * Created by luke on 01/12/2016.
- */
-
 public class Pair<Type1, Type2> {
+    //Simple tuple
     public final Type1 first;
     public final Type2 second;
 

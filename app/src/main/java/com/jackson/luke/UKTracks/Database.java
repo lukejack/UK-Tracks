@@ -21,10 +21,11 @@ import java.util.List;
 
 //Tutorial from http://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
 public class Database extends SQLiteOpenHelper {
-    // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "ArtistTracksa.db";
 
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "ArtistTracks.db";
+
+    //SQL execution strings
     private static final String ARTISTS_TABLE = "artists";
     private static final String TRACKS_TABLE = "tracks";
     private static final String TEXT_TYPE = " TEXT";
@@ -66,8 +67,6 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // This database is only a cache for online data, so its upgrade policy is
-        // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES_ARTISTS);
         db.execSQL(SQL_DELETE_ENTRIES_TRACKS);
         onCreate(db);
@@ -85,34 +84,35 @@ public class Database extends SQLiteOpenHelper {
     public void addTrack(Track track) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        //Get the current date
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String date = df.format(c.getTime());
 
+        //Parse object data into ContentValues
         ContentValues values = new ContentValues();
         values.put("artist", track.getArtist());
         values.put("name", track.getTitle());
         values.put("position", track.getPosition());
         values.put("date", date);
-        long track_id = db.insert(TRACKS_TABLE, null, values);
-
+        db.insert(TRACKS_TABLE, null, values);
         db.close();
     }
 
     public ArrayList<Track> getTracks(Date date){
+
+        //Get all tracks for the input date
         String selectQuery = "SELECT * FROM " + TRACKS_TABLE + " WHERE date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
-        ArrayList<Track> tracks= new ArrayList<>();
 
+        //Add all tracks to return list
+        ArrayList<Track> tracks= new ArrayList<>();
         if (c.moveToFirst()){
             do {
                 tracks.add(new Track(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("artist")), c.getString(c.getColumnIndex("position"))));
-                //String dateofthis = c.getString(c.getColumnIndex("date"));
-
             } while (c.moveToNext());
         }
-
         c.close();
         return tracks;
     }
@@ -120,9 +120,12 @@ public class Database extends SQLiteOpenHelper {
     public List<Date> getDaysWithData(){
         SQLiteDatabase db = this.getWritableDatabase();
         List<Date> dates = new ArrayList<>();
+
+        //Get unique dates with data
         String query = "SELECT DISTINCT date FROM " + TRACKS_TABLE;
         Cursor c = db.rawQuery(query, null);
 
+        //Add all these dates to the return list
         if (c.moveToFirst()){
             do {
                 DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
@@ -130,7 +133,7 @@ public class Database extends SQLiteOpenHelper {
                     dates.add(dbFormat.parse(c.getString(c.getColumnIndex("date"))));
                 } catch (Exception e)
                 {
-
+                    return dates;
                 }
             } while (c.moveToNext());
         }
@@ -145,37 +148,32 @@ public class Database extends SQLiteOpenHelper {
         List<Track> dbTracks;
         dbTracks = getTracks(date);
 
-
         Boolean notSame = false;
-
         if (dbTracks.size() == 0)
-        {
-            notSame = true;
-        } else {
+            notSame = true; //No tracks, so update is required
+        else {
             for (int i = 0; i < dbTracks.size(); i++)
-            {
+            {   //If an element is not the same, update
                 notSame = !dbTracks.get(i).equals(tracks.get(i));
                 if (notSame){break;}
             }
         }
 
-        if (notSame)
+        if (notSame) //The database needs updating
         {
-            Log.v("DATABASE", "Not the same set!");
             //Delete the current day's entries in the database
-            //String where = "date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')";
             db.delete(TRACKS_TABLE, "date = Date('" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "')", null);
-
-            for (Track t : tracks){
-                addTrack(t);
-            }
+            //Add each track into the database
+            for (Track t : tracks){addTrack(t);}
         }
+
         db.close();
     }
 
     public void addArtist(Artist artist){
         SQLiteDatabase db = this.getWritableDatabase();
 
+        //Parse object attributes into ContentValues and insert into the database
         ContentValues values = new ContentValues();
         values.put("name", artist.getName());
         values.put("smallIMG", artist.getSmall64());
@@ -190,6 +188,7 @@ public class Database extends SQLiteOpenHelper {
     public void addImageLargeArtist(String name, String data){
         SQLiteDatabase db = this.getReadableDatabase();
 
+        //Set the image for this artist in the database
         ContentValues cv = new ContentValues();
         cv.put("largeIMG", data);
         db.update(ARTISTS_TABLE, cv, "name='"+name + "'", null);
@@ -199,6 +198,7 @@ public class Database extends SQLiteOpenHelper {
     public void addArtistDetail(String name, String began, String ended, String country){
         SQLiteDatabase db = this.getReadableDatabase();
 
+        //Insert details into the record matching the artist name
         ContentValues cv = new ContentValues();
         cv.put("begin", began);
         cv.put("end", ended);
@@ -212,11 +212,14 @@ public class Database extends SQLiteOpenHelper {
         String query =
                 "SELECT * FROM " + ARTISTS_TABLE + " WHERE name = '" + name + "' LIMIT 1";
         Cursor c = db.rawQuery(query, null);
+
+        //Get the only element in the list if it exists
         if (c.moveToFirst()){
-            Artist returner;
-            returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG")));
+            //Construct returning Artist with database values
+            Artist returner = new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG")));
             if (c.getString(c.getColumnIndex("country")) != null)
             {
+                //If the detail is available, set the object values
                 returner.setDetail(c.getString(c.getColumnIndex("begin")), c.getString(c.getColumnIndex("end")), c.getString(c.getColumnIndex("country")));
             }
             c.close();
@@ -224,11 +227,14 @@ public class Database extends SQLiteOpenHelper {
             return returner;
         } else {
             db.close();
-            return null;}
+            return null;
+        }
     }
 
     public ArrayList<Artist> getTrackArtists(ArrayList<Track> tracks){
         ArrayList<Artist> artists = new ArrayList<>();
+
+        //Get all unique artists from a list of tracks
         for (Track t : tracks)
         {
             boolean alreadyExists = false;
@@ -248,11 +254,12 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query =
                 "SELECT " + imageType + " FROM " + ARTISTS_TABLE + " WHERE name='" + name + "' LIMIT 1";
-
         Cursor c = db.rawQuery(query, null);
+
+        //If the data exists in the database, then return it
         if (c.moveToFirst() && (c.getString(c.getColumnIndex(imageType)) != null)){
-            //c.close();
             db.close();
+            //Return as a bitmap
             return Bitmap64.toBitmap(c.getString(c.getColumnIndex(imageType)));
         } else {
             db.close();
@@ -264,16 +271,16 @@ public class Database extends SQLiteOpenHelper {
                 "SELECT * FROM " + ARTISTS_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
-
-
         List<Artist> dbArtists = new ArrayList<>();
 
+        //Add all the artist from the database into a list
         if (c.moveToFirst()){
             do {
                 dbArtists.add(new Artist(c.getString(c.getColumnIndex("name")), null, c.getString(c.getColumnIndex("largeURL")), c.getString(c.getColumnIndex("lastFmURL")), c.getString(c.getColumnIndex("MBID")), c.getString(c.getColumnIndexOrThrow("smallIMG")), c.getString(c.getColumnIndexOrThrow("largeIMG"))));
             } while (c.moveToNext());
         }
 
+        //Find whether an artist exists i the database list
         for (Artist inA : artists) {
             boolean found = false;
             for (Artist dbA : dbArtists) {
@@ -282,8 +289,8 @@ public class Database extends SQLiteOpenHelper {
                     break;
                 }
             }
-            //Isn't in the database
             if (!found){
+                //Add it if it doesn't exist in the database list
                 addArtist(inA);
             }
         }
@@ -291,7 +298,4 @@ public class Database extends SQLiteOpenHelper {
         c.close();
         db.close();
     }
-
-
-
 }

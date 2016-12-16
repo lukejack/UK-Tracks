@@ -38,9 +38,12 @@ public class TrackAdapter extends ArrayAdapter<ListedTrack> {
             return convertView;
         }
 
+        //set the small image if it exists.
         if (data[position].getSmallImg() != null){
             imgArt.setImageBitmap(data[position].getSmallImg());
         }
+
+        //Bind text to UI
         txtTitle.setText(data[position].getTitle());
         txtArtist.setText(data[position].getArtist());
         txtPosition.setText(data[position].getPosition());

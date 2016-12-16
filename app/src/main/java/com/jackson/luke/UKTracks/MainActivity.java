@@ -34,7 +34,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
-    private ListView listView = null;
+    private ListView listView = null; //Primary view of tracks
     private MainActivity activity = this;
 
     //Construct track manager with activity reference for data return
@@ -42,25 +42,24 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     private ArrayList<Artist> artists = new ArrayList<>();
     private ArrayList<Track> tracks = new ArrayList<>();
     private Database db = new Database(this);
-    private ProgressBar progressBar;
-
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
 
+        //Initialise the interface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-        List<Date> dates = db.getDaysWithData();
-        //Get UI components
-        listView = (ListView) findViewById(R.id.tweetList);
+
+        //Bind elements to code
+        listView = (ListView) findViewById(R.id.trackList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+                //Open track detail activity
                 Intent intent = new Intent(activity, DetailActivity.class);
                 Track selected = tracks.get(position);
+                //Find the artist for that track
                 for (Artist a : artists){
                     if (a.getName().equals(selected.getArtist())){
                         intent.putExtra("artist", a);
@@ -71,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 startActivity(intent);
             }
         });
+
+        //Get the track data from the track manager
         manager.getInstance(isNetworkAvailable(getApplicationContext()));
         //this.deleteDatabase("ArtistTracksa.db");
         //Artist[] test = new Artist[1];
@@ -97,9 +98,12 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     }
 
     public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data, boolean newData){
+
         List<ListedTrack> listData = new ArrayList<>();
         tracks = data.first;
         artists = data.second;
+
+        //Bind artists with tracks and list them
         for (Track t : data.first){
             for(Artist a : data.second){
                 if (t.getArtist().equals(a.getName())){
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         TrackAdapter adapter2 = new TrackAdapter(this, listData.toArray(new ListedTrack[listData.size()]));
         listView.setAdapter(adapter2);
 
+        //Update the database if the data is new
         if (newData) {
             db.updateArtists(artists);
             db.updateTracks(tracks, Calendar.getInstance().getTime());
@@ -120,12 +125,17 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     }
 
     public void drawDateSelection(){
+        //Get the unique days from the database
         final ArrayList<Date> dates = new ArrayList<>(db.getDaysWithData());
         String[] textDates = new String[dates.size()];
+
+        //Convert these dates into strings
         for (int i = 0; i < dates.size(); i++){
             DateFormat dbFormat = new SimpleDateFormat("yyy-MM-dd");
             textDates[i] = dbFormat.format(dates.get(i));
         }
+
+        //Draw the date selection popup list
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, textDates);
         final ListPopupWindow dateSelection = new ListPopupWindow(activity);
         dateSelection.setAdapter(adapter);
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
         dateSelection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-                Log.v("Position", Integer.toString(position));
+                //Get the data of the selection from the database
                 ArrayList<Track> dbTracks = db.getTracks(dates.get(position));
                 ArrayList<Artist> dbArtists = db.getTrackArtists(dbTracks);
                 onReturn(new Pair<>(dbTracks, dbArtists), false);
@@ -156,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        //Set up menu bar items
         switch (item.getItemId()) {
             case R.id.refresh:
                 manager.getInstance(isNetworkAvailable(getApplicationContext()));
@@ -170,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
     }
 
     public void postToast(String text){
+        //Display a notification to the user
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, text, duration);

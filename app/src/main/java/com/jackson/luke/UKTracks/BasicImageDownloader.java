@@ -18,7 +18,6 @@ import java.util.Set;
 
 public class BasicImageDownloader {
     //Sourced from https://github.com/vad-zuev/ImageDownloader/blob/master/app/src/main/java/com/so/example/tools/BasicImageDownloader.java
-    
     private OnImageLoaderListener mImageLoaderListener;
     private Set<String> mUrlsInProgress = new HashSet<>();
     private final String TAG = this.getClass().getSimpleName();
