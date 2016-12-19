@@ -48,7 +48,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
         if (networkAvailable){
             try {
                 //Call asynchronous network downloading object and pass this reference for message return
-                new RestRequest(this).execute(new URL("http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=735d178e0129f10c4058fb1172b36405&format=json&limit=25"));
+                new RestRequest(this).execute(new URL("http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=735d178e0129f10c4058fb1172b36405&format=json"));
             } catch (Exception e) {
                 //An unchanging URL will not throw this error
                 caller.postToast("Invalid URL for data request");
@@ -62,7 +62,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
                 caller.postToast("No internet connection, displaying tracks for " + dbFormat.format(dates.get(0)));
                 ArrayList<Track> dbTracks = new ArrayList<>(db.getTracks(dates.get(0)));
                 ArrayList<Artist> artists = new ArrayList<>(db.getTrackArtists(dbTracks));
-                caller.onReturn(new Pair<>(dbTracks, artists), false);
+                caller.onReturn(dbTracks, artists, false);
             } else {
                 //There is no data in the database, and there is no internet connection
                 caller.postToast("Unable to find a network connection or cached tracks");
@@ -133,7 +133,7 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
             //If all images have been downloaded, return the data
             imageCount = 0;
             progressBar.setVisibility(View.INVISIBLE);
-            caller.onReturn(new Pair<>(new ArrayList<>(Arrays.asList(tracks)), artists), true);
+            caller.onReturn(new ArrayList<Track>(Arrays.asList(tracks)), artists, true);
         }
     }
 

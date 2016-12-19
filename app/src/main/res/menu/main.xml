@@ -4,11 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/search"
+        android:title="Voice\nSearch"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/selectDay"
-        android:title="Date Select"
+        android:title="Browse\nSaved"
         app:showAsAction="always"/>
     <item
         android:id="@+id/refresh"
-        android:title="Refresh"
+        android:title="Refresh\nList"
         app:showAsAction="always"/>
+
 </menu>

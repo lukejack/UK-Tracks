@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">UK Tracks</string>
+    <string name="app_name">Chart Tracks</string>
     <string name="title_activity_detail">DetailActivity</string>
 </resources>

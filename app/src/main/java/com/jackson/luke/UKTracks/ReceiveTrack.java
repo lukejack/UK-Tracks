@@ -6,6 +6,6 @@ package com.jackson.luke.UKTracks;
 import java.util.ArrayList;
 
 public interface ReceiveTrack {
-    void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> items, boolean newData);
+    void onReturn(ArrayList<Track> tracks, ArrayList<Artist> artists, boolean newData);
     void postToast(String text);
 }

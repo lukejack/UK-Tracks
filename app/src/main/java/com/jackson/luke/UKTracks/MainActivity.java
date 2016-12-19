@@ -1,36 +1,30 @@
 package com.jackson.luke.UKTracks;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListPopupWindow;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Space;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
@@ -74,38 +68,38 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         //Get the track data from the track manager
         manager.getInstance(isNetworkAvailable(getApplicationContext()));
         //this.deleteDatabase("ArtistTracksa.db");
-        //Artist[] test = new Artist[1];
-        //test[0] = new Artist("aa", "ab", "ac", "ad", "ae");
-        //db.updateArtists(test);
-        //db.addArtist(new Artist("a", "small", "large", "last", "mbid"));
-        //Artist test = db.getArtist("name");
-        //List<Track> test = new ArrayList<>();
-
-
-        //for (Track t : test)
-        //    db.addTrack(t);
-
-        //test.clear();
-        //test.add(new Track("a", "b", "c"));
-        //test.add(new Track("a", "132123123", "d"));
-        //test.add(new Track("097214309874320987", "b", "f"));
-
-        //db.updateTracks(test, Calendar.getInstance().getTime());
-        //db.addImageLargeArtist("a", "IMAGE OVER HERE");
-
-        //List<Track> tracks = new ArrayList<>();
-        //tracks = db.getTracks(Calendar.getInstance().getTime());
     }
 
-    public void onReturn(Pair<ArrayList<Track>, ArrayList<Artist>> data, boolean newData){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 2: {
+                //Speech return
+                if ((data != null) && (resultCode == RESULT_OK)) {
+                    ArrayList<String> speech = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //Start a web browser with the wikipedia search
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("http://www.last.fm/search?q=" + speech.get(0)));
+                    startActivity(i);
+                } else {
+                    postToast("Unable to recognise speech");
+                }
+                break;
+            }
+        }
+    }
+
+    public void onReturn(ArrayList<Track> _tracks, ArrayList<Artist> _artists, boolean newData){
 
         List<ListedTrack> listData = new ArrayList<>();
-        tracks = data.first;
-        artists = data.second;
+        tracks = _tracks;
+        artists = _artists;
 
         //Bind artists with tracks and list them
-        for (Track t : data.first){
-            for(Artist a : data.second){
+        for (Track t : _tracks){
+            for(Artist a : _artists){
                 if (t.getArtist().equals(a.getName())){
                     ListedTrack thisOne = new ListedTrack(t.getTitle(), a.getName(), t.getPosition(), a.getSmallIMG());
                     listData.add(thisOne);
@@ -149,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 //Get the data of the selection from the database
                 ArrayList<Track> dbTracks = db.getTracks(dates.get(position));
                 ArrayList<Artist> dbArtists = db.getTrackArtists(dbTracks);
-                onReturn(new Pair<>(dbTracks, dbArtists), false);
+                onReturn(dbTracks, dbArtists, false);
                 dateSelection.dismiss();
             }
         });
@@ -173,6 +167,16 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
                 return true;
             case R.id.selectDay:
                 drawDateSelection();
+                return true;
+            case R.id.search:
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                try {
+                    startActivityForResult(intent, 2);
+                } catch (Exception a) {
+                    postToast("Download the Google app for voice search");
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.googlequicksearchbox")));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
