@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         final ListPopupWindow dateSelection = new ListPopupWindow(activity);
         dateSelection.setAdapter(adapter);
         dateSelection.setWidth(400);
-        dateSelection.setHeight(600);
+        dateSelection.setHeight(400);
         Space anchorPoint = (Space) findViewById(R.id.anchor);
         dateSelection.setAnchorView(anchorPoint);
 
@@ -163,17 +163,22 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
         //Set up menu bar items
         switch (item.getItemId()) {
             case R.id.refresh:
+                //Get list data
                 manager.getInstance(isNetworkAvailable(getApplicationContext()));
                 return true;
             case R.id.selectDay:
                 drawDateSelection();
                 return true;
             case R.id.search:
+                //Create an intent for speech recognition
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                //Set the language as the local language
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
                 try {
+                    //Response code is 2
                     startActivityForResult(intent, 2);
                 } catch (Exception a) {
+                    //The user probably does not have the required google application
                     postToast("Download the Google app for voice search");
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.googlequicksearchbox")));
                 }

@@ -26,9 +26,9 @@ public class TrackManager implements ReceiveString, BasicImageDownloader.OnImage
 
     private static ReceiveTrack caller;
     private MainActivity context;
-
+    
     private static Track[] tracks;
-    private static ArrayList<Artist> artists = new ArrayList<Artist>();
+    private static ArrayList<Artist> artists = new ArrayList<>();
     private static Database db;
     private ProgressBar progressBar;
 

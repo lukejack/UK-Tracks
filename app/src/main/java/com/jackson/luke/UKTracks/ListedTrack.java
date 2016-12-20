@@ -6,12 +6,10 @@ import android.util.Base64;
 
 public class ListedTrack {
 
-
     private String title;
     private String artist;
     private String position;
     private Bitmap image;
-
 
     public ListedTrack(String _title, String _artist, String _position, Bitmap _image){
         title = _title;
