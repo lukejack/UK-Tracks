@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements ReceiveTrack {
 
         //Get the track data from the track manager
         manager.getInstance(isNetworkAvailable(getApplicationContext()));
-        //this.deleteDatabase("ArtistTracksa.db");
     }
 
     @Override
